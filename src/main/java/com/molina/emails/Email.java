@@ -11,7 +11,8 @@ import javax.mail.*;
 import javax.mail.internet.*;
 import javax.activation.*;
 
-public class Library {
+public class Email {
+
   public boolean someLibraryMethod() {
 		// try {
 		// } catch(Exception e) {
@@ -73,17 +74,5 @@ public class Library {
     }
   }
 
-	public static Library LibraryFactory(String configFile) {
-		if (configFile.isEmpty()) {
-			return null;
-		}
-
-		try {
-			Wini ini = new Wini(new File(configFile));
-		} catch(Exception e) {
-			return null;
-		}
-		return new Library();
-	}
 
 }
