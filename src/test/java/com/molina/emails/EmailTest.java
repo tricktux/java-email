@@ -10,7 +10,10 @@ public class EmailTest {
 	private static String PATH_TO_CONFIG = "../../email_config.ini";
   @Test
   public void testBuildingEmail() {
-		Email email = EmailBuilder(PATH_TO_CONFIG);
+		EmailBuilder builder = new EmailBuilder();
+		builder.config(PATH_TO_CONFIG);
+		Email email = builder.build();
+
 		assertTrue(email != null);
   }
 }
