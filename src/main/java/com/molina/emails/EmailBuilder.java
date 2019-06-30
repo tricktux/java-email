@@ -17,8 +17,32 @@ class EmailBuilder {
 	private String from;
 	private String host;
 	private String port;
+	private String username;
+	private String password;
 	private int ssl;
 	private int tls;
+
+	private Properties props;
+	private Session session;
+
+	public Email build() {
+		if (props == null) {
+			logger.error("Invalid properties");
+			return null;
+		}
+
+		if (session == null) {
+			logger.error("Invalid session");
+			return null;
+		}
+
+		Email email = new Email();
+		email.setFrom(from);
+		email.setProperties(props);
+		email.setSession(session);
+
+		return email;
+	}
 
 	public boolean config(String configFile) {
 		if (configFile.isEmpty()) {
@@ -36,12 +60,27 @@ class EmailBuilder {
 			ssl = ini.get("email", "ssl", int.class);
 			tls = ini.get("email", "tls", int.class);
 
-			Properties props = createProps();
+			props = createProps();
+
+			username = ini.get("user", "username");
+			password = ini.get("user", "password");
+
+			session = createSession();
 		} catch(Exception e) {
 			logger.trace("Exception accessing config file");
 			return false;
 		}
 		return true;
+	}
+
+	private Session createSession() {
+		return Session.getDefaultInstance(properties,
+				new javax.mail.Authenticator() {
+					protected PasswordAuthentication getPasswordAuthentication() {
+						return new PasswordAuthentication(
+								user, password);// Specify the Username and the PassWord
+					}
+				});
 	}
 
 	private Properties createProps() {
