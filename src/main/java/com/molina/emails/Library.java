@@ -3,6 +3,9 @@
  */
 package com.molina.emails;
 
+import java.io.File;
+import org.ini4j.*;
+
 import java.util.*;
 import javax.mail.*;
 import javax.mail.internet.*;
@@ -10,6 +13,11 @@ import javax.activation.*;
 
 public class Library {
   public boolean someLibraryMethod() {
+		// try {
+		// } catch(Exception e) {
+			// ;
+		// }
+
     // Recipient's email ID needs to be mentioned.
     String to = "neomol@protonmail.com";
 
@@ -64,4 +72,18 @@ public class Library {
       return false;
     }
   }
+
+	public static Library LibraryFactory(String configFile) {
+		if (configFile.isEmpty()) {
+			return null;
+		}
+
+		try {
+			Wini ini = new Wini(new File(configFile));
+		} catch(Exception e) {
+			return null;
+		}
+		return new Library();
+	}
+
 }
