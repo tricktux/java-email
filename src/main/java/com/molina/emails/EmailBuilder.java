@@ -25,34 +25,15 @@ class EmailBuilder {
 	private Properties props;
 	private Session session;
 
-	public Email build() {
-		if (props == null) {
-			logger.error("Invalid properties");
-			return null;
-		}
-
-		if (session == null) {
-			logger.error("Invalid session");
-			return null;
-		}
-
-		Email email = new Email();
-		email.setFrom(from);
-		email.setProperties(props);
-		email.setSession(session);
-
-		return email;
-	}
-
-	public boolean config(String configFile) {
+	public Email build(String configFile) {
 		if (configFile.isEmpty()) {
 			logger.error("Invalid function input");
-			return false;
+			return null;
 		}
 
 		logger.debug(String.format("Config file = '%s'", configFile));
 		try {
-			Wini ini = new Wini(new FileReader(configFile));
+			Wini ini = new Wini(new File(configFile));
 
 			from = ini.get("email", "from");
 			host = ini.get("email", "host");
@@ -60,45 +41,60 @@ class EmailBuilder {
 			ssl = ini.get("email", "ssl", int.class);
 			tls = ini.get("email", "tls", int.class);
 
-			props = createProps();
+			createProps();
+			if (props == null) {
+				logger.error("Failed to create properties");
+				return null;
+			}
+
 
 			username = ini.get("user", "username");
 			password = ini.get("user", "password");
 
 			session = createSession();
+			if (session == null) {
+				logger.error("Failed to create session");
+				return null;
+			}
+
+			Email email = new Email();
+			email.setFrom(from);
+			email.setProperties(props);
+			email.setSession(session);
+
+			return email;
 		} catch(Exception e) {
 			logger.trace("Exception accessing config file");
-			return false;
+			return null;
 		}
-		return true;
 	}
 
 	private Session createSession() {
-		return Session.getDefaultInstance(properties,
+		if (props == null)
+			return null;
+		return Session.getDefaultInstance(props,
 				new javax.mail.Authenticator() {
 					protected PasswordAuthentication getPasswordAuthentication() {
 						return new PasswordAuthentication(
-								user, password);// Specify the Username and the PassWord
+								username, password);// Specify the Username and the PassWord
 					}
 				});
 	}
 
-	private Properties createProps() {
-    Properties properties = System.getProperties();
+	private void createProps() {
+    props = new Properties(System.getProperties());
 
     // Setup mail server
-    properties.setProperty("mail.smtp.auth", "true");
-		if (tls)
-			properties.setProperty("mail.smtp.starttls.enable", "true");
-    properties.setProperty("mail.smtp.host", host);
-    properties.setProperty("mail.smtp.port", port);
-		if (ssl) {
-			properties.setProperty("mail.smtp.socketFactory.port", port);
-			properties.setProperty("mail.smtp.socketFactory.class",
+    props.setProperty("mail.smtp.auth", "true");
+		if (tls > 0)
+			props.setProperty("mail.smtp.starttls.enable", "true");
+    props.setProperty("mail.smtp.host", host);
+    props.setProperty("mail.smtp.port", port);
+		if (ssl > 0) {
+			props.setProperty("mail.smtp.socketFactory.port", port);
+			props.setProperty("mail.smtp.socketFactory.class",
 					"javax.net.ssl.SSLSocketFactory");
 		}
-
-		return properties;
 	}
 
 }

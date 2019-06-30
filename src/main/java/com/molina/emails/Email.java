@@ -12,42 +12,11 @@ import javax.mail.internet.*;
 import javax.activation.*;
 
 public class Email {
+  private Properties properties = null;
+  private Session session = null;
+  private String from = null;
 
-  public boolean someLibraryMethod() {
-		// try {
-		// } catch(Exception e) {
-			// ;
-		// }
-
-    // Recipient's email ID needs to be mentioned.
-    String to = "neomol@protonmail.com";
-
-    // Sender's email ID needs to be mentioned
-    String from = "Reinaldo Molina <rmolin88@gmail.com>";
-
-    // Get system properties
-    Properties properties = System.getProperties();
-    System.out.println("About to configure application....");
-
-    // Setup mail server
-    properties.setProperty("mail.smtp.auth", "true");
-    properties.setProperty("mail.smtp.starttls.enable", "true");
-    properties.setProperty("mail.smtp.host", "smtp.gmail.com");
-    properties.setProperty("mail.smtp.port", "465");
-    properties.setProperty("mail.smtp.socketFactory.port", "465");
-    properties.setProperty("mail.smtp.socketFactory.class",
-                           "javax.net.ssl.SSLSocketFactory");
-
-    // Get the default Session object.
-    Session session = Session.getDefaultInstance(properties,
-    new javax.mail.Authenticator() {
-      protected PasswordAuthentication getPasswordAuthentication() {
-        return new PasswordAuthentication(
-                 "user", "password");// Specify the Username and the PassWord
-      }
-    });
-
-    System.out.println("Set properties. Let the fun begin....");
+  public boolean sendEmail(String to, String subject, String content) {
     try {
       // Create a default MimeMessage object.
       MimeMessage message = new MimeMessage(session);
@@ -59,14 +28,13 @@ public class Email {
       message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
 
       // Set Subject: header field
-      message.setSubject("This is the Subject Line!");
+      message.setSubject(subject);
 
       // Now set the actual message
-      message.setText("This is actual message");
+      message.setText(content);
 
       // Send message
       Transport.send(message);
-      System.out.println("Sent message successfully....");
       return true;
     } catch (MessagingException mex) {
       mex.printStackTrace();
@@ -75,4 +43,57 @@ public class Email {
   }
 
 
+  /**
+   * Get properties.
+   *
+   * @return properties as Properties.
+   */
+  public Properties getProperties() {
+    return properties;
+  }
+
+  /**
+   * Set properties.
+   *
+   * @param properties the value to set.
+   */
+  public void setProperties(Properties properties) {
+    this.properties = properties;
+  }
+
+  /**
+   * Get session.
+   *
+   * @return session as Session.
+   */
+  public Session getSession() {
+    return session;
+  }
+
+  /**
+   * Set session.
+   *
+   * @param session the value to set.
+   */
+  public void setSession(Session session) {
+    this.session = session;
+  }
+
+  /**
+   * Get from.
+   *
+   * @return from as String.
+   */
+  public String getFrom() {
+    return from;
+  }
+
+  /**
+   * Set from.
+   *
+   * @param from the value to set.
+   */
+  public void setFrom(String from) {
+    this.from = from;
+  }
 }
