@@ -9,54 +9,59 @@ import javax.mail.internet.*;
 import javax.activation.*;
 
 public class Library {
-    public boolean someLibraryMethod() {
-			// Recipient's email ID needs to be mentioned.
-			String to = "neomol@protonmail.com";
+  public boolean someLibraryMethod() {
+    // Recipient's email ID needs to be mentioned.
+    String to = "neomol@protonmail.com";
 
-			// Sender's email ID needs to be mentioned
-			String from = "rmolin88@gmail.com";
+    // Sender's email ID needs to be mentioned
+    String from = "Reinaldo Molina <rmolin88@gmail.com>";
 
-			// Assuming you are sending email from localhost
-			String host = "smtps://$my_username@smtp.gmail.com:465/";
+    // Get system properties
+    Properties properties = System.getProperties();
+    System.out.println("About to configure application....");
 
-			// Get system properties
-			Properties properties = System.getProperties();
+    // Setup mail server
+    properties.setProperty("mail.smtp.auth", "true");
+    properties.setProperty("mail.smtp.starttls.enable", "true");
+    properties.setProperty("mail.smtp.host", "smtp.gmail.com");
+    properties.setProperty("mail.smtp.port", "465");
+    properties.setProperty("mail.smtp.socketFactory.port", "465");
+    properties.setProperty("mail.smtp.socketFactory.class",
+                           "javax.net.ssl.SSLSocketFactory");
 
-			// Setup mail server
-			// properties.setProperty("mail.smtp.host", host);
-			properties.setProperty("mail.smtp.auth", "true");
-			properties.setProperty("mail.smtp.starttls.enable", "true");
-			properties.setProperty("mail.smtp.host", "smtp.gmail.com");
-			properties.setProperty("mail.smtp.port", "587");
-			properties.setProperty("mail.user", "rmolin88");
-			properties.setProperty("mail.password", "gzheilsrpvgrcold");
+    // Get the default Session object.
+    Session session = Session.getDefaultInstance(properties,
+    new javax.mail.Authenticator() {
+      protected PasswordAuthentication getPasswordAuthentication() {
+        return new PasswordAuthentication(
+                 "user", "password");// Specify the Username and the PassWord
+      }
+    });
 
-			// Get the default Session object.
-			Session session = Session.getDefaultInstance(properties);
+    System.out.println("Set properties. Let the fun begin....");
+    try {
+      // Create a default MimeMessage object.
+      MimeMessage message = new MimeMessage(session);
 
-			try {
-				// Create a default MimeMessage object.
-				MimeMessage message = new MimeMessage(session);
+      // Set From: header field of the header.
+      message.setFrom(new InternetAddress(from));
 
-				// Set From: header field of the header.
-				message.setFrom(new InternetAddress(from));
+      // Set To: header field of the header.
+      message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
 
-				// Set To: header field of the header.
-				message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+      // Set Subject: header field
+      message.setSubject("This is the Subject Line!");
 
-				// Set Subject: header field
-				message.setSubject("This is the Subject Line!");
+      // Now set the actual message
+      message.setText("This is actual message");
 
-				// Now set the actual message
-				message.setText("This is actual message");
-
-				// Send message
-				Transport.send(message);
-				System.out.println("Sent message successfully....");
-				return true;
-			} catch (MessagingException mex) {
-				mex.printStackTrace();
-				return false;
-			}
+      // Send message
+      Transport.send(message);
+      System.out.println("Sent message successfully....");
+      return true;
+    } catch (MessagingException mex) {
+      mex.printStackTrace();
+      return false;
     }
+  }
 }
