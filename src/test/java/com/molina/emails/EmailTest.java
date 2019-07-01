@@ -7,7 +7,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class EmailTest {
-  private static String PATH_TO_CONFIG = "../../email_config.ini";
+  private static String PATH_TO_CONFIG = "src/main/resources/email_config.ini";
   private static String TO = "neomol@protonmail.com";
   private static String SUBJECT = "prueba";
   private static String CONTENT = ":D";
