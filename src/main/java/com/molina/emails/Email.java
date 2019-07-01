@@ -11,8 +11,11 @@ import javax.mail.*;
 import javax.mail.internet.*;
 import javax.activation.*;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class Email {
-  private String from = null;
+  private String from;
   private String host;
   private String port;
   private String username;
@@ -20,8 +23,43 @@ public class Email {
   private int ssl;
   private int tls;
 
+  final static Log logger = LogFactory.getLog(Email.class);
+
+  private boolean isValidEmailAddress(String email) {
+    boolean result = true;
+    try {
+      InternetAddress emailAddr = new InternetAddress(email);
+      emailAddr.validate();
+    } catch (AddressException ex) {
+      result = false;
+    }
+    return result;
+  }
+
   public boolean sendEmail(String to, String subject, String content) {
     try {
+      if (isValidEmailAddress(to)) {
+        logger.error("Invalid to email address provided");
+        return false;
+      }
+
+			if ((to == null) || (to.isEmpty())) {
+				logger.error("Invalid from email address");
+				return false;
+			}
+
+      Properties properties = createProps();
+      if (properties == null) {
+        logger.error("Failed to set system properties");
+				return false;
+      }
+
+      Session session = createSession(properties);
+			if (session == null) {
+				logger.error("Failed to set email session");
+				return false;
+			}
+
       // Create a default MimeMessage object.
       MimeMessage message = new MimeMessage(session);
 
@@ -41,10 +79,44 @@ public class Email {
       Transport.send(message);
       return true;
     } catch (MessagingException mex) {
+      logger.trace("Exception sending email");
       mex.printStackTrace();
       return false;
     }
   }
+
+  private Properties createProps() {
+    Properties props = new Properties(System.getProperties());
+
+    // Setup mail server
+    props.setProperty("mail.smtp.auth", "true");
+    if (tls > 0)
+      props.setProperty("mail.smtp.starttls.enable", "true");
+    props.setProperty("mail.smtp.host", host);
+    props.setProperty("mail.smtp.port", port);
+    if (ssl > 0) {
+      props.setProperty("mail.smtp.socketFactory.port", port);
+      props.setProperty("mail.smtp.socketFactory.class",
+                        "javax.net.ssl.SSLSocketFactory");
+    }
+
+    return props;
+  }
+
+  private Session createSession(Properties properties) {
+    if (properties == null) {
+      return null;
+    }
+
+    return Session.getDefaultInstance(properties,
+    new javax.mail.Authenticator() {
+      protected PasswordAuthentication getPasswordAuthentication() {
+        return new PasswordAuthentication(
+                 username, password);
+      }
+    });
+  }
+
 
   /**
    * Get from.
@@ -61,6 +133,11 @@ public class Email {
    * @param from the value to set.
    */
   public void setFrom(String from) {
+		if (!isValidEmailAddress(from)) {
+			logger.error("Invalid from email address provided");
+			return;
+		}
+
     this.from = from;
   }
 
