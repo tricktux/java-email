@@ -12,9 +12,13 @@ import javax.mail.internet.*;
 import javax.activation.*;
 
 public class Email {
-  private Properties properties = null;
-  private Session session = null;
   private String from = null;
+  private String host;
+  private String port;
+  private String username;
+  private String password;
+  private int ssl;
+  private int tls;
 
   public boolean sendEmail(String to, String subject, String content) {
     try {
@@ -42,43 +46,6 @@ public class Email {
     }
   }
 
-
-  /**
-   * Get properties.
-   *
-   * @return properties as Properties.
-   */
-  public Properties getProperties() {
-    return properties;
-  }
-
-  /**
-   * Set properties.
-   *
-   * @param properties the value to set.
-   */
-  public void setProperties(Properties properties) {
-    this.properties = properties;
-  }
-
-  /**
-   * Get session.
-   *
-   * @return session as Session.
-   */
-  public Session getSession() {
-    return session;
-  }
-
-  /**
-   * Set session.
-   *
-   * @param session the value to set.
-   */
-  public void setSession(Session session) {
-    this.session = session;
-  }
-
   /**
    * Get from.
    *
@@ -95,5 +62,113 @@ public class Email {
    */
   public void setFrom(String from) {
     this.from = from;
+  }
+
+  /**
+   * Get host.
+   *
+   * @return host as String.
+   */
+  public String getHost() {
+    return host;
+  }
+
+  /**
+   * Set host.
+   *
+   * @param host the value to set.
+   */
+  public void setHost(String host) {
+    this.host = host;
+  }
+
+  /**
+   * Get port.
+   *
+   * @return port as String.
+   */
+  public String getPort() {
+    return port;
+  }
+
+  /**
+   * Set port.
+   *
+   * @param port the value to set.
+   */
+  public void setPort(String port) {
+    this.port = port;
+  }
+
+  /**
+   * Get username.
+   *
+   * @return username as String.
+   */
+  public String getUsername() {
+    return username;
+  }
+
+  /**
+   * Set username.
+   *
+   * @param username the value to set.
+   */
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  /**
+   * Get password.
+   *
+   * @return password as String.
+   */
+  public String getPassword() {
+    return password;
+  }
+
+  /**
+   * Set password.
+   *
+   * @param password the value to set.
+   */
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  /**
+   * Get ssl.
+   *
+   * @return ssl as int.
+   */
+  public int getSsl() {
+    return ssl;
+  }
+
+  /**
+   * Set ssl.
+   *
+   * @param ssl the value to set.
+   */
+  public void setSsl(int ssl) {
+    this.ssl = ssl;
+  }
+
+  /**
+   * Get tls.
+   *
+   * @return tls as int.
+   */
+  public int getTls() {
+    return tls;
+  }
+
+  /**
+   * Set tls.
+   *
+   * @param tls the value to set.
+   */
+  public void setTls(int tls) {
+    this.tls = tls;
   }
 }
