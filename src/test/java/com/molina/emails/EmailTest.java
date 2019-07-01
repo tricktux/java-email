@@ -18,14 +18,14 @@ public class EmailTest {
     EmailBuilder builder = new EmailBuilder();
     Email email = builder.build(PATH_TO_CONFIG);
 
-    assertTrue(email != null);
+    assertFalse(email == null);
 
     testEmail = email;
   }
 
   @Test
   public void testSendingEmail() {
-    assertTrue(testEmail != null);
+    assertFalse(testEmail == null);
     assertTrue(testEmail.sendEmail(TO, SUBJECT, CONTENT));
   }
 }

@@ -25,13 +25,20 @@ class EmailBuilder {
 			Wini ini = new Wini(new File(configFile));
 
 			String from = ini.get("email", "from");
+			logger.debug(String.format("from = '%s'", from));
 			String host = ini.get("email", "host");
+			logger.debug(String.format("host = '%s'", host));
 			String port = ini.get("email", "port");
+			logger.debug(String.format("port = '%s'", port));
 			int ssl = ini.get("email", "ssl", int.class);
+			logger.debug(String.format("ssl = '%i'", ssl));
 			int tls = ini.get("email", "tls", int.class);
+			logger.debug(String.format("tls = '%i'", tls));
 
 			String username = ini.get("user", "username");
+			logger.debug(String.format("username = '%s'", username));
 			String password = ini.get("user", "password");
+			logger.debug(String.format("password = '%s'", password));
 
 			Email email = new Email();
 			email.setFrom(from);
@@ -48,7 +55,5 @@ class EmailBuilder {
 			return null;
 		}
 	}
-
-
 
 }
