@@ -38,8 +38,9 @@ public class Email {
 
   public boolean sendEmail(String to, String subject, String content) {
     try {
-      if (isValidEmailAddress(to)) {
-        logger.error("Invalid to email address provided");
+      if (!isValidEmailAddress(to)) {
+        logger.error(String.format("Invalid to '%s' email address provided",
+						to));
         return false;
       }
 
